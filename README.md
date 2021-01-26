@@ -5,7 +5,8 @@
 user then we can use any other normal user with sudo privilege. In that case we have to add below two conditions in the ansible 
 playbook file.
 
- - hosts: centoshost
+ 
+- hosts: centoshost
 
   remote_user: root
 
