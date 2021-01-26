@@ -6,8 +6,6 @@ user then we can use any other normal user with sudo privilege. In that case we 
 playbook file.
 
  
-'-' hosts: centoshost
-
   remote_user: root
 
   become: yes  <---------------
