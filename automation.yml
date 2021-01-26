@@ -1,0 +1,73 @@
+---
+- hosts: centoshost
+  remote_user: root
+
+  tasks:
+   - name: Add group " johndoegroup" to remote server
+     group:
+       name:  johndoegroup
+       gid: 2000
+       state: present
+
+   - name: Add user " johndoe" to remote server
+     user:
+       name:  johndoe
+       comment: "Privileged User"
+       uid: 2001
+       group: johndoegroup
+       append: yes
+       shell: /bin/bash
+       generate_ssh_key: yes
+       ssh_key_bits: 2048
+       ssh_key_file: .ssh/id_rsa
+   - name: update the system
+     yum:
+       name: "*"
+       state: latest
+   - name: Install all the packages
+     yum:
+       name: ['screen', 'vim', 'htop', 'git', 'atop', 'ntp', 'unbound', 'monit', 'wget']       
+       state: present
+       update_cache: True
+   - name: Start and Enable NTP service                                                                                                                          
+     service:                                                                                                                                                                
+       name: ntpd                                                                                                                                                            
+       state: started                                                                                                                                                        
+       enabled: yes 
+   - name: Configure NTP servers to use Singaporean ones
+     copy:
+       src: files/ntp_centos.conf
+       dest: /etc/ntp.conf
+       backup: yes
+     notify:
+       - restart ntp
+   - name: Add REMI Repository
+     yum:
+       name: https://rpms.remirepo.net/enterprise/remi-release-7.rpm
+       state: present
+   - name: Install package with multiple repos enabled
+     yum:
+       name: php
+       enablerepo: "remi-php74"
+       state: present
+   - name: Download ngnix1.18
+     get_url:
+       url: http://nginx.org/packages/centos/7/x86_64/RPMS/nginx-1.18.0-2.el7.ngx.x86_64.rpm
+       dest: /var/tmp/automation/files/
+   - name: install ngnix version 1.18
+     yum:
+       name: /var/tmp/automation/files/nginx-1.18.0-2.el7.ngx.x86_64.rpm
+       state: present
+   - name: Transfer the script
+     copy: src=files/bashscript.sh dest=/var/tmp/automation mode=0755
+
+   - name: Execute the script
+     command: sh /var/tmp/automation/bashscript.sh
+
+  handlers:
+    - name: restart ntp
+      service: name=ntp state=restarted
+
+
+
+...
