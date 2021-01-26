@@ -7,7 +7,7 @@ playbook file.
 
 - hosts: centoshost
   >remote_user: root
-  become: yes  <---------------
-  u  become_method: sudo  <---------------
-   
+  >become: yes  <---------------
+  >become_method: sudo  <---------------
+  >
 (2) We are updating the CentOS so make sure the repo file should be updated properly pointing to internal repo server.
