@@ -3,7 +3,7 @@
 
 (1) Here i am using root user to login to CentOS host so make sure root user should be password less login. If we are not using root 
 user then we can use any other normal user with sudo privilege. In that case we have to add below two conditions in the ansible 
-playbook file.
+playbook file.>
 
 - hosts: centoshost
   remote_user: root
